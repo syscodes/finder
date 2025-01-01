@@ -20,11 +20,34 @@
  * @license     https://opensource.org/licenses/BSD-3-Clause New BSD license or see https://lenevor.com/license or see /license.md
  */
 
- namespace Syscodes\Components\Finder\Exceptions;
+namespace Syscodes\Components\Finder\Filters;
 
-use UnexpectedValueException;
+use Syscodes\Components\Finder\Glob;
 
 /**
- * AccessDeniedException.
+ * Gets the filename filter for iterator.
  */
-class AccessDeniedException extends UnexpectedValueException {}
+class FilenameFilterIterator extends MultiFilterIterator
+{
+    /**
+     * Filters the iterator values.
+     * 
+     * @return bool
+     */
+    public function accept(): bool
+    {
+        return $this->isAccepted($this->current()->getFilename());
+    }
+
+    /**
+     * Converts string into regexp.
+     * 
+     * @param  string  $value
+     * 
+     * @return string
+     */
+    protected function toRegex(string $value): string
+    {
+        return $this->isRegex($value) ? $value : Glob::toRegex($value);
+    }
+}
